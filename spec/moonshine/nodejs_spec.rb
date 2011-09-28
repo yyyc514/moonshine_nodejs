@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "A manifest with the Nodejs plugin" do
-
   before do
     @manifest = NodejsManifest.new
     @manifest.nodejs
@@ -16,5 +15,4 @@ describe "A manifest with the Nodejs plugin" do
   # @manifest.files['/etc/foo.conf'].content.should match /foo=true/
   # @manifest.execs['newaliases'].refreshonly.should be_true
   #end
-
 end
