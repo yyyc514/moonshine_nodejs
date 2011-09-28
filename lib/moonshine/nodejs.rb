@@ -1,17 +1,16 @@
 require 'pathname'
 
+#
 # Define options for this plugin via the <tt>configure</tt> method
 # in your application manifest:
 #
-#    configure(:nodejs => {
-#       :version      => '0.5.4', 
-#       :npm_version  => '1.0.26', 
-#       :npm_clean    => 'yes'})
+#    configure(:nodejs => { :version => '0.5.4' })
 #
 # Moonshine will autoload plugins, just call the recipe(s) you need in your
 # manifests:
 #
 #    recipe :nodejs
+#
 
 module Moonshine
   module Nodejs
@@ -60,16 +59,7 @@ module Moonshine
     end
 
     def nodejs(user_options = {})
-      # define the recipe
-      # options specified with the configure method will be 
-      # automatically available here in the options hash.
-      #    options[:foo]   # => true
-
-      options = {
-        :version => '0.4.11',
-        :npm_version  => '1.0.26',
-        :npm_clean    => 'yes'
-      }.merge(user_options)
+      options = { :version => '0.4.11' }.merge(user_options)
 
       # dependecies for install
       package 'wget',         :ensure => :installed
@@ -84,7 +74,6 @@ module Moonshine
       install_command = 'sudo make install'
       test_command = 'make test'
       
-
       exec 'download node.js',
         :require  => package('wget'),
         :cwd      => '/opt/local/src',
@@ -123,31 +112,6 @@ module Moonshine
         :logoutput => true,
         :creates  => '/opt/local/lib/node',
         :unless   => "test \"`node --version`\" = \"v#{options[:version]}\""
-
-      exec 'install npm',
-        :require  => exec('make install node.js'),
-        :command  => [
-          "bash -c 'export PATH=/opt/local/bin:$PATH'",
-          'wget http://npmjs.org/install.sh',
-          'chmod 700 install.sh',
-          "clean=#{options[:npm_clean]} ./install.sh"
-        ].join(' && '),
-        :cwd      => "/opt/local/src/#{get_folder(options[:version])}",
-        :logoutput => true,
-        :unless   => "test \"`npm --version`\" = \"#{options[:npm_version]}\""
-
-      exec 'set vars',
-        :require  => exec('install npm'),
-        :command  => [
-            "echo 'export PATH=/opt/local/bin:$PATH' >> ~/.profile",
-            'echo "export NODE_PATH=`npm root -g`" >> ~/.profile',
-          ].join(' && '),
-        :user     => 'rails',
-        :group    => 'rails',
-        :logoutput => true,
-        :unless   => "test \"`npm --version`\" = \"#{options[:npm_version]}\""
-
     end
-    
   end
 end
