@@ -15,7 +15,7 @@ module Moonshine
         :content => template(File.join(File.dirname(__FILE__), '..', '..', 'templates', 'nodejs.list.erb'), binding)
       
       exec 'ppa:chris-lea/node.js apt-key',
-        :command => 'apt-key adv --keyserver keyserver.ubuntu.com --recv C7917B12',
+        :command => 'apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv C7917B12',
         :unless => 'apt-key list | grep C7917B12',
         :logoutput => :on_failure
       
